@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كبابجي وبروست ابن مصر - المنيو الإلكتروني</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Cairo) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#D9232D',
+                            darkred: '#9B1B22',
+                            gold: '#D4AF37',
+                            amber: '#FFBF00',
+                            dark: '#121212',
+                            surface: '#1E1E1E',
+                            card: '#282828'
+                        }
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-panel {
+            background: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 191, 0, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-brand-dark text-gray-100 min-h-screen pb-24 font-cairo">
+
+    <!-- Header Section -->
+    <header class="relative bg-gradient-to-b from-brand-darkred to-brand-dark pt-8 pb-6 px-4 shadow-2xl border-b border-brand-amber/20">
+        <div class="max-w-3xl mx-auto text-center relative z-10">
+            <div class="inline-block p-1 bg-gradient-to-r from-brand-amber to-brand-red rounded-full shadow-lg mb-3">
+                <img id="rest-logo" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200" alt="Logo" class="w-20 h-20 rounded-full object-cover border-2 border-brand-dark">
+            </div>
+            <h1 id="rest-name" class="text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-amber via-white to-brand-gold mb-1">
+                كبابجي وبروست ابن مصر
+            </h1>
+            <p id="rest-desc" class="text-amber-200/80 text-xs sm:text-sm max-w-md mx-auto mb-3">
+                أصل المشويات والبروست في طامية • طعم مصري أصيل
+            </p>
+            <div class="flex flex-wrap justify-center items-center gap-3 text-xs text-gray-300">
+                <span class="bg-black/40 px-3 py-1 rounded-full border border-amber-500/20"><i class="fa-solid font-bold text-amber-400 fa-location-dot me-1"></i> طامية - مساكن الزراعة - أمام إعدادي بنات</span>
+                <a href="tel:01040062596" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 px-3 py-1 rounded-full border border-amber-500/40 transition">
+                    <i class="fa-solid fa-phone me-1"></i> 01040062596
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-4 mt-6">
+        
+        <!-- Search & Custom Sheet Sync -->
+        <div class="space-y-3 mb-6">
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="text" id="search-input" oninput="filterItems()" placeholder="ابحث عن صنفك المفضل (كباب، بروست، ريزو...)" 
+                       class="w-full bg-brand-surface border border-gray-700 focus:border-brand-amber text-white pr-11 pl-4 py-3 rounded-2xl outline-none transition text-sm shadow-inner">
+            </div>
+
+            <!-- Categories Horizontal Scroll -->
+            <div id="categories-container" class="flex gap-2 overflow-x-auto no-scrollbar py-1">
+                <!-- Category Buttons Generated Dynamically -->
+            </div>
+        </div>
+
+        <!-- Google Sheets Integration Banner (Optional Sync) -->
+        <div class="mb-4 bg-brand-surface/60 border border-amber-500/10 rounded-xl p-3 text-xs text-gray-400 flex justify-between items-center">
+            <span><i class="fa-solid fa-sync text-brand-amber me-1"></i> الأسعار محدثة تلقائياً مع المنيو الأساسي</span>
+            <button onclick="openSyncModal()" class="text-brand-amber underline hover:text-white transition">تحديث عبر شيت</button>
+        </div>
+
+        <!-- Menu Items List -->
+        <div id="items-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Item Cards Generated Dynamically -->
+        </div>
+
+        <!-- Empty Search State -->
+        <div id="empty-state" class="hidden text-center py-12 text-gray-400">
+            <i class="fa-solid fa-utensils text-4xl mb-3 text-brand-amber/40"></i>
+            <p>لا توجد أصناف مطابقة للبحث</p>
+        </div>
+    </main>
+
+    <!-- Floating Cart Bar -->
+    <div id="floating-cart" class="fixed bottom-4 left-4 right-4 max-w-3xl mx-auto z-40 hidden">
+        <div class="glass-panel rounded-2xl p-4 flex justify-between items-center shadow-2xl border border-brand-amber/30">
+            <div class="flex items-center gap-3">
+                <div class="relative bg-gradient-to-r from-brand-amber to-brand-red w-12 h-12 rounded-xl flex items-center justify-center text-brand-dark font-black text-lg shadow-lg">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-white text-brand-red text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow">0</span>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-400">إجمالي الطلب</p>
+                    <p class="text-lg font-extrabold text-brand-amber"><span id="cart-total">0</span> <span class="text-xs text-gray-300">ج.م</span></p>
+                </div>
+            </div>
+            <button onclick="openCartModal()" class="bg-gradient-to-r from-brand-amber to-amber-600 text-brand-dark font-bold px-5 py-2.5 rounded-xl hover:brightness-110 transition flex items-center gap-2 text-sm shadow-md">
+                عرض السلة <i class="fa-solid fa-arrow-left"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-brand-surface w-full max-w-lg rounded-t-3xl sm:rounded-2xl max-h-[90vh] flex flex-col border border-brand-amber/20 shadow-2xl">
+            <!-- Modal Header -->
+            <div class="p-4 border-b border-gray-800 flex justify-between items-center">
+                <h2 class="text-lg font-bold text-brand-amber flex items-center gap-2">
+                    <i class="fa-solid fa-cart-flatbed"></i> سلة المشتريات
+                </h2>
+                <button onclick="closeCartModal()" class="text-gray-400 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="p-4 overflow-y-auto flex-1 space-y-4">
+                <!-- Order Type Selector -->
+                <div class="grid grid-cols-2 gap-2 p-1 bg-black/40 rounded-xl border border-gray-800">
+                    <button type="button" id="btn-dinein" onclick="setOrderType('dinein')" class="py-2 rounded-lg text-sm font-bold transition bg-brand-amber text-brand-dark">
+                        <i class="fa-solid fa-chair me-1"></i> داخل المطعم
+                    </button>
+                    <button type="button" id="btn-delivery" onclick="setOrderType('delivery')" class="py-2 rounded-lg text-sm font-bold transition text-gray-400 hover:text-white">
+                        <i class="fa-solid fa-motorcycle me-1"></i> توصيل للمنزل
+                    </button>
+                </div>
+
+                <!-- Customer Details Form -->
+                <div id="dinein-fields" class="space-y-3">
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">رقم الطاولة *</label>
+                        <input type="text" id="table-number" placeholder="مثال: طاولة 5" class="w-full bg-black/40 border border-gray-700 text-white rounded-xl px-3 py-2 text-sm outline-none focus:border-brand-amber">
+                    </div>
+                </div>
+
+                <div id="delivery-fields" class="space-y-3 hidden">
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">الاسم بالكامل *</label>
+                        <input type="text" id="cust-name" placeholder="أدخل اسمك" class="w-full bg-black/40 border border-gray-700 text-white rounded-xl px-3 py-2 text-sm outline-none focus:border-brand-amber">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">رقم الهاتف *</label>
+                        <input type="tel" id="cust-phone" placeholder="010XXXXXXXX" class="w-full bg-black/40 border border-gray-700 text-white rounded-xl px-3 py-2 text-sm outline-none focus:border-brand-amber">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">العنوان بالتفصيل *</label>
+                        <input type="text" id="cust-address" placeholder="المنطقة، اسم الشارع، رقم العمارة..." class="w-full bg-black/40 border border-gray-700 text-white rounded-xl px-3 py-2 text-sm outline-none focus:border-brand-amber">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">ملاحظات على الطلب (اختياري)</label>
+                    <textarea id="order-notes" rows="2" placeholder="أسياخ إضافية، بدون بصل، زيادة طحينة..." class="w-full bg-black/40 border border-gray-700 text-white rounded-xl px-3 py-2 text-sm outline-none focus:border-brand-amber resize-none"></textarea>
+                </div>
+
+                <!-- Selected Items List -->
+                <div class="border-t border-gray-800 pt-3">
+                    <h3 class="text-xs font-bold text-gray-400 mb-2">الأصناف المختارة:</h3>
+                    <div id="cart-items-list" class="space-y-2">
+                        <!-- Dynamic Cart Rows -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-gray-800 bg-black/40 space-y-3">
+                <div class="flex justify-between items-center text-sm">
+                    <span class="text-gray-400">الإجمالي النهائي:</span>
+                    <span class="text-xl font-black text-brand-amber"><span id="modal-cart-total">0</span> ج.م</span>
+                </div>
+                <button onclick="sendToWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 shadow-lg">
+                    <i class="fa-brands fa-whatsapp text-xl"></i> إرسال الطلب عبر واتساب
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sync Sheet Modal -->
+    <div id="sync-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-brand-surface w-full max-w-md rounded-2xl p-5 border border-brand-amber/30 space-y-4">
+            <h3 class="text-base font-bold text-brand-amber flex items-center gap-2">
+                <i class="fa-solid fa-file-csv"></i> ربط الأسعار بملف Google Sheets
+            </h3>
+            <p class="text-xs text-gray-300 leading-relaxed">
+                قم بنشر شيت جوجل بصيغة Web CSV واستبدل البيانات فوراً دون الحاجة لتغيير الكود!
+            </p>
+            <input type="url" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/e/.../pub?output=csv" class="w-full bg-black/40 border border-gray-700 text-white rounded-xl px-3 py-2 text-xs outline-none focus:border-brand-amber">
+            <div class="flex gap-2">
+                <button onclick="syncGoogleSheet()" class="flex-1 bg-brand-amber text-brand-dark font-bold py-2 rounded-xl text-xs">جلب البيانات</button>
+                <button onclick="closeSyncModal()" class="px-4 bg-gray-800 text-gray-300 rounded-xl text-xs">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer & Rights -->
+    <footer class="mt-12 py-6 text-center text-gray-500 border-t border-gray-800 text-xs">
+        <div class="max-w-3xl mx-auto px-4 space-y-2">
+            <p>© 2026 جميع الحقوق محفوظة لمطعم كبابجي وبروست ابن مصر</p>
+            <p class="font-bold text-gray-400">
+                تصميم وتطوير: <a href="tel:01154155415" class="text-brand-amber hover:underline">Hussein Mohareb • 01154155415</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Restaurant Config
+        const restaurantData = {
+            name: "كبابجي وبروست ابن مصر",
+            logo: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200",
+            phone: "01040062596",
+            whatsapp: "201040062596",
+            address: "طامية - مساكن الزراعة - أمام إعدادي بنات",
+            currency: "ج.م"
+        };
+
+        // Full
