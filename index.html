@@ -3,504 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>قائمة الطعام التفاعلية</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
+    <title>المنيو الذكي</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts: Tajawal -->
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            gold: '#D4AF37',
-                            goldLight: '#F3E5AB',
-                            dark: '#121212',
-                            cardBg: '#1A1A1A',
-                            accent: '#FF7B00',
-                            accentHover: '#E06C00'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Tajawal', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
     <style>
+        :root {
+            --primary-color: #ff9900;
+            --bg-color: #0f0f0f;
+            --card-bg: #1a1a1a;
+            --text-color: #ffffff;
+            --text-muted: #aaaaaa;
+        }
         body {
-            font-family: 'Tajawal', sans-serif;
-            background-color: #0d0d0d;
-            color: #f3f4f6;
-            -webkit-tap-highlight-color: transparent;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-bottom: 80px;
         }
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
+        .restaurant-header {
+            text-align: center;
+            padding: 30px 15px 20px;
+            background: linear-gradient(180deg, rgba(255,153,0,0.15) 0%, rgba(15,15,15,1) 100%);
+            border-bottom: 1px solid #2a2a2a;
         }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+        .restaurant-logo {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-color);
+            margin-bottom: 12px;
         }
-        .gold-gradient-text {
-            background: linear-gradient(135deg, #FFF099 0%, #D4AF37 50%, #997A15 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .category-scroll {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 12px 10px;
+            background-color: #141414;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #222;
         }
-        .glass-card {
-            background: rgba(26, 26, 26, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(212, 175, 55, 0.15);
+        .category-scroll::-webkit-scrollbar { display: none; }
+        .category-btn {
+            background: #222;
+            color: #fff;
+            border: 1px solid #333;
+            padding: 8px 18px;
+            margin-left: 8px;
+            border-radius: 20px;
+            font-size: 14px;
+            transition: all 0.3s;
         }
-        .glass-nav {
-            background: rgba(18, 18, 18, 0.95);
-            backdrop-filter: blur(16px);
+        .category-btn.active {
+            background: var(--primary-color);
+            color: #000;
+            font-weight: bold;
+            border-color: var(--primary-color);
+        }
+        .menu-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid #262626;
+            margin-bottom: 15px;
+            overflow: hidden;
+            display: flex;
+        }
+        .menu-card-img {
+            width: 110px;
+            height: 110px;
+            object-fit: cover;
+        }
+        .menu-card-body {
+            padding: 12px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .menu-card-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .menu-card-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .price-tag {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 15px;
+        }
+        .add-btn {
+            background: var(--primary-color);
+            color: #000;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        .cart-bar {
+            position: fixed;
+            bottom: 15px;
+            left: 15px;
+            right: 15px;
+            background: var(--primary-color);
+            color: #000;
+            padding: 12px 20px;
+            border-radius: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255,153,0,0.4);
+            z-index: 999;
+            cursor: pointer;
         }
     </style>
 </head>
-<body class="bg-brand-dark min-h-screen pb-28 text-gray-100 flex flex-col">
+<body>
 
-    <!-- Header & Branding -->
-    <header class="relative bg-gradient-to-b from-black via-brand-dark to-brand-cardBg border-b border-brand-gold/20 pt-8 pb-6 px-4 text-center shadow-2xl">
-        <div class="max-w-4xl mx-auto flex flex-col items-center">
-            <div class="relative mb-3">
-                <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-brand-gold via-amber-500 to-amber-700 flex items-center justify-center p-1 shadow-lg shadow-amber-500/20">
-                    <div class="w-full h-full bg-brand-dark rounded-full flex items-center justify-center border border-brand-gold/40">
-                        <i class="fa-solid font-bold fa-utensils text-3xl text-brand-gold"></i>
-                    </div>
-                </div>
-                <span class="absolute -bottom-1 -right-1 bg-brand-accent text-white text-xs px-2 py-0.5 rounded-full font-bold shadow">
-                    ★ 4.9
-                </span>
-            </div>
-
-            <!-- Dynamic Restaurant Name & Subtitle -->
-            <h1 id="restaurantName" class="text-3xl md:text-4xl font-extrabold gold-gradient-text tracking-wide mb-1">جاري التحميل...</h1>
-            <p id="restaurantSubtitle" class="text-amber-200/80 text-sm md:text-base font-medium max-w-md">
-                يرجى الانتظار بينما يتم تحميل قائمة الطعام
-            </p>
-        </div>
-    </header>
-
-    <!-- Main Container -->
-    <main class="max-w-4xl mx-auto px-4 w-full flex-grow mt-4">
-        <div class="sticky top-0 z-20 glass-nav pt-2 pb-3 px-1 -mx-1 mb-6 rounded-b-2xl border-b border-amber-900/20">
-            <div class="relative mb-3">
-                <input type="text" id="searchInput" oninput="handleSearch()" placeholder="ابحث عن وجبتك المفضلة..." 
-                    class="w-full bg-neutral-900/90 border border-amber-500/30 text-gray-100 placeholder-gray-500 rounded-2xl py-3 pr-11 pl-10 text-sm focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition shadow-inner">
-                <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-amber-500/60"></i>
-                <button onclick="clearSearch()" id="clearSearchBtn" class="hidden absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-xs bg-gray-800 rounded-full w-5 h-5 flex items-center justify-center">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1" id="categoriesContainer"></div>
-        </div>
-
-        <div id="menuGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-
-        <div id="noResults" class="hidden text-center py-12">
-            <i class="fa-solid fa-utensils text-5xl text-gray-700 mb-3"></i>
-            <p class="text-gray-400 font-medium">لم يتم العثور على أطباق تطابق بحثك</p>
-            <button onclick="clearSearch()" class="mt-3 text-brand-gold text-sm underline">عرض كل الأصناف</button>
-        </div>
-    </main>
-
-    <!-- Floating Cart Bar -->
-    <div id="floatingCart" class="fixed bottom-4 left-4 right-4 max-w-xl mx-auto z-30 transition-all duration-300 transform translate-y-28 opacity-0 pointer-events-none">
-        <div class="bg-gradient-to-r from-amber-600 via-amber-500 to-brand-accent text-white p-3.5 rounded-2xl shadow-2xl flex items-center justify-between border border-amber-300/30 backdrop-blur-md">
-            <div class="flex items-center gap-3">
-                <div class="relative bg-black/30 w-11 h-11 rounded-xl flex items-center justify-center">
-                    <i class="fa-solid fa-basket-shopping text-xl text-amber-200"></i>
-                    <span id="cartBadge" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-amber-500">0</span>
-                </div>
-                <div>
-                    <div class="text-xs text-amber-100 font-medium">المجموع الكلي</div>
-                    <div class="text-lg font-extrabold" id="cartTotalBar">0</div>
-                </div>
-            </div>
-            <button onclick="openModal('cartModal')" class="bg-black/40 hover:bg-black/60 text-amber-200 font-bold px-4 py-2 rounded-xl text-sm transition flex items-center gap-2">
-                عرض السلة <i class="fa-solid fa-chevron-left text-xs"></i>
-            </button>
+    <div id="app">
+        <div class="text-center py-5">
+            <div class="spinner-border text-warning" role="status"></div>
+            <p class="mt-2">جاري تحميل المنيو...</p>
         </div>
     </div>
 
-    <!-- Cart Modal -->
-    <div id="cartModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
-        <div class="bg-brand-cardBg border border-amber-500/20 w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
-            <div class="p-4 border-b border-gray-800 flex items-center justify-between bg-black/40">
-                <h3 class="text-lg font-bold text-brand-gold flex items-center gap-2">
-                    <i class="fa-solid fa-cart-shopping"></i> سلة المشتريات
-                </h3>
-                <button onclick="closeModal('cartModal')" class="text-gray-400 hover:text-white p-2">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
-            </div>
-
-            <div class="p-4 overflow-y-auto flex-grow space-y-3" id="cartItemsContainer"></div>
-
-            <div class="p-4 bg-neutral-900/90 border-t border-gray-800 space-y-3">
-                <div class="flex items-center justify-between text-sm font-bold border-b border-gray-800 pb-2">
-                    <span class="text-gray-400">إجمالي الطلب:</span>
-                    <span class="text-brand-gold text-xl" id="cartTotalModal">0</span>
-                </div>
-
-                <div class="space-y-1.5">
-                    <label class="text-xs font-medium text-gray-300">نوع الطلب:</label>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button type="button" id="btnDining" onclick="setOrderType('dining')" class="py-2 text-xs font-bold rounded-xl border border-brand-gold bg-brand-gold/20 text-brand-gold flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-utensils"></i> داخل المطعم
-                        </button>
-                        <button type="button" id="btnDelivery" onclick="setOrderType('delivery')" class="py-2 text-xs font-bold rounded-xl border border-gray-700 bg-gray-800 text-gray-400 flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-truck"></i> توصيل للمنزل
-                        </button>
-                    </div>
-                </div>
-
-                <div id="diningFields" class="space-y-2">
-                    <input type="number" id="tableNum" placeholder="رقم الطاولة *" class="w-full bg-black/50 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-gold">
-                </div>
-
-                <div id="deliveryFields" class="space-y-2 hidden">
-                    <input type="text" id="custName" placeholder="الاسم الكامل *" class="w-full bg-black/50 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-gold">
-                    <input type="tel" id="custPhone" placeholder="رقم الهاتف *" class="w-full bg-black/50 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-gold">
-                    <textarea id="custAddress" placeholder="العنوان التفصيلي (الحي، الشارع، المعالم) *" rows="2" class="w-full bg-black/50 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-gold resize-none"></textarea>
-                </div>
-
-                <textarea id="orderNotes" placeholder="ملاحظات إضافية عن الطعام..." rows="1" class="w-full bg-black/50 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-gold resize-none"></textarea>
-
-                <button onclick="sendWhatsAppOrder()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-3 rounded-xl text-base shadow-lg transition flex items-center justify-center gap-2">
-                    <i class="fa-brands fa-whatsapp text-xl"></i> إرسال الطلب عبر الواتساب
-                </button>
-            </div>
-        </div>
+    <!-- شريط السلة السفلي -->
+    <div id="cartBar" class="cart-bar d-none" onclick="sendOrderWhatsApp()">
+        <span><i class="fa-solid fa-cart-shopping me-2"></i> إرسال الطلب (<span id="cartCount">0</span>)</span>
+        <span id="cartTotal">0 ج.م</span>
     </div>
 
-    <!-- Footer & Developer Signature -->
-    <footer class="mt-auto border-t border-gray-800 bg-black/60 py-6 text-center text-xs text-gray-500">
-        <div class="max-w-4xl mx-auto px-4 space-y-2">
-            <p id="footerRestaurantName">© جميع الحقوق محفوظة</p>
-            <p class="text-gray-400 font-medium">
-                تصميم وتطوير: 
-                <span class="text-brand-gold font-bold inline-flex items-center gap-1">Hussein Mohareb</span>
-            </p>
-        </div>
-    </footer>
-
-    <!-- JavaScript logic -->
     <script>
-        let menuItems = [];
+        let restaurantData = null;
         let cart = {};
-        let activeCategory = "الكل";
-        let searchQuery = "";
-        let orderType = "dining";
-        let CASHIER_WHATSAPP = "966509909750"; 
-        let currentRestaurantName = "المطعم";
 
-        const categoryIcons = {
-            "الكل": "fa-list",
-            "المشاوي (Grills)": "fa-fire-burner",
-            "الطواجن بالفرن (Oven Casseroles)": "fa-bowl-food",
-            "إدامات (Stew / Side Dishes)": "fa-cloud-meatball",
-            "الشاورما (Shawarma)": "fa-stroopwafel",
-            "المقبلات (Appetizers)": "fa-bowl-rice"
-        };
+        // 1. تحديد المطعم تلقائياً مع خيار افتراضي ibn-masr
+        const urlParams = new URLSearchParams(window.location.search);
+        const restaurantId = urlParams.get('res') || 'ibn-masr';
 
-        window.onload = async function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const restaurantId = urlParams.get('id');
-
-            if (!restaurantId) {
-                document.getElementById('restaurantName').innerText = "خطأ في الرابط";
-                document.getElementById('restaurantSubtitle').innerText = "يرجى التأكد من استخدام الرابط الصحيح الخاص بالمطعم";
-                return;
-            }
-
-            try {
-                const response = await fetch(`${restaurantId}.json`);
-                if (!response.ok) throw new Error('لم يتم العثور على ملف المطعم');
-                
-                const data = await response.json();
-                
-                currentRestaurantName = data.restaurantName;
-                document.getElementById('restaurantName').innerText = data.restaurantName;
-                document.getElementById('restaurantSubtitle').innerText = data.subtitle;
-                document.getElementById('footerRestaurantName').innerText = `© جميع الحقوق محفوظة لـ ${data.restaurantName}`;
-                
-                if (data.whatsapp) {
-                    CASHIER_WHATSAPP = data.whatsapp;
-                }
-                
-                menuItems = data.menuItems || [];
-
-                renderCategories();
-                renderMenu();
-                updateCartUI();
-
-            } catch (error) {
-                console.error(error);
-                document.getElementById('restaurantName').innerText = "عذراً، حدث خطأ";
-                document.getElementById('restaurantSubtitle').innerText = "تعذر تحميل قائمة الطعام لهذا المطعم، تأكد من صحة الرابط.";
-            }
-        };
-
-        function renderCategories() {
-            const container = document.getElementById('categoriesContainer');
-            const categories = ["الكل", ...new Set(menuItems.map(item => item.category))];
-
-            container.innerHTML = categories.map(cat => {
-                const isActive = activeCategory === cat;
-                const icon = categoryIcons[cat] || "fa-utensils";
-                return `
-                    <button onclick="setCategory('${cat}')" 
-                        class="px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 shadow-sm ${
-                            isActive 
-                            ? 'bg-gradient-to-r from-brand-gold to-amber-500 text-black shadow-amber-500/20 scale-105' 
-                            : 'bg-neutral-900 text-gray-300 hover:bg-neutral-800 border border-gray-800'
-                        }">
-                        <i class="fa-solid ${icon}"></i>
-                        ${cat}
-                    </button>
-                `;
-            }).join('');
-        }
-
-        function setCategory(cat) {
-            activeCategory = cat;
-            renderCategories();
-            renderMenu();
-        }
-
-        function handleSearch() {
-            const input = document.getElementById('searchInput');
-            searchQuery = input.value.trim().toLowerCase();
-            document.getElementById('clearSearchBtn').classList.toggle('hidden', searchQuery === '');
-            renderMenu();
-        }
-
-        function clearSearch() {
-            document.getElementById('searchInput').value = '';
-            searchQuery = '';
-            document.getElementById('clearSearchBtn').classList.add('hidden');
-            renderMenu();
-        }
-
-        function renderMenu() {
-            const grid = document.getElementById('menuGrid');
-            const noResults = document.getElementById('noResults');
-
-            const filtered = menuItems.filter(item => {
-                const matchesCat = activeCategory === "الكل" || item.category === activeCategory;
-                const matchesSearch = item.name.toLowerCase().includes(searchQuery) || 
-                                      (item.engName && item.engName.toLowerCase().includes(searchQuery)) ||
-                                      (item.desc && item.desc.toLowerCase().includes(searchQuery));
-                return matchesCat && matchesSearch;
+        // 2. جلب البيانات
+        fetch(`${restaurantId}.json`)
+            .then(res => {
+                if(!res.ok) throw new Error('تعذر تحميل البيانات');
+                return res.json();
+            })
+            .then(data => {
+                restaurantData = data;
+                renderApp();
+            })
+            .catch(err => {
+                // محاولة ثانية لتحميل ibn-masr مباشرة حالة حدوث أي خطأ
+                fetch('ibn-masr.json')
+                    .then(res => res.json())
+                    .then(data => {
+                        restaurantData = data;
+                        renderApp();
+                    })
+                    .catch(() => {
+                        document.getElementById('app').innerHTML = `
+                            <div class="text-center py-5 text-danger">
+                                <h3>عذراً، حدث خطأ في تحميل المنيو</h3>
+                                <p>يرجى التاكد من الرابط أو محاولة التحديث مرة أخرى.</p>
+                            </div>
+                        `;
+                    });
             });
 
-            if (filtered.length === 0) {
-                grid.innerHTML = '';
-                noResults.classList.remove('hidden');
-                return;
-            }
+        function renderApp() {
+            const app = document.getElementById('app');
+            document.title = restaurantData.restaurantName || 'المنيو الذكي';
 
-            noResults.classList.add('hidden');
+            let categoriesHTML = `<div class="category-scroll">`;
+            restaurantData.categories.forEach((cat, index) => {
+                categoriesHTML += `<button class="category-btn ${index === 0 ? 'active' : ''}" onclick="scrollToCategory('${cat.id}', this)">${cat.name}</button>`;
+            });
+            categoriesHTML += `</div>`;
 
-            grid.innerHTML = filtered.map(item => {
-                const qty = cart[item.id] ? cart[item.id].qty : 0;
-                return `
-                    <div class="glass-card rounded-2xl p-4 flex flex-col justify-between hover:border-brand-gold/40 transition duration-300 group">
-                        <div class="flex justify-between items-start gap-3">
-                            <div class="space-y-1">
-                                <div class="flex items-center gap-2">
-                                    <h3 class="font-extrabold text-white text-base group-hover:text-brand-gold transition">${item.name}</h3>
+            let itemsHTML = `<div class="container mt-3">`;
+            restaurantData.categories.forEach(cat => {
+                itemsHTML += `<h5 id="${cat.id}" class="mt-4 mb-3 text-warning border-bottom border-secondary pb-2">${cat.name}</h5>`;
+                cat.items.forEach(item => {
+                    itemsHTML += `
+                        <div class="menu-card">
+                            <img src="${item.image || 'https://via.placeholder.com/150'}" class="menu-card-img" alt="${item.name}">
+                            <div class="menu-card-body">
+                                <div>
+                                    <div class="menu-card-title">${item.name}</div>
+                                    <div class="menu-card-desc">${item.description || ''}</div>
                                 </div>
-                                ${item.engName ? `<p class="text-xs text-amber-200/60 font-medium">${item.engName}</p>` : ''}
-                                <p class="text-xs text-gray-400 leading-relaxed">${item.desc || 'طازج ومحضر يومياً بأعلى جودة'}</p>
-                            </div>
-                            
-                            <div class="text-left shrink-0">
-                                <span class="text-xl font-black text-brand-gold">${item.price}</span>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="price-tag">${item.price} ج.م</span>
+                                    <button class="add-btn" onclick="addToCart('${item.id}', '${item.name}', ${item.price})">+ إضافة</button>
+                                </div>
                             </div>
                         </div>
+                    `;
+                });
+            });
+            itemsHTML += `</div>`;
 
-                        <div class="mt-4 pt-3 border-t border-gray-800/80 flex items-center justify-between">
-                            <span class="text-[11px] text-gray-500 bg-black/40 px-2.5 py-1 rounded-lg border border-gray-800">
-                                ${item.category.split(' ')[0]}
-                            </span>
-
-                            ${qty === 0 ? `
-                                <button onclick="addToCart(${item.id})" class="bg-brand-gold/10 hover:bg-brand-gold/20 text-brand-gold border border-brand-gold/40 font-bold px-4 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition active:scale-95">
-                                    <i class="fa-solid fa-plus text-xs"></i> إضافة
-                                </button>
-                            ` : `
-                                <div class="flex items-center gap-2 bg-black/60 border border-brand-gold/40 rounded-xl p-1">
-                                    <button onclick="updateQty(${item.id}, -1)" class="w-7 h-7 rounded-lg bg-amber-500/20 text-brand-gold hover:bg-amber-500/40 flex items-center justify-center font-bold text-sm transition">-</button>
-                                    <span class="font-extrabold text-white text-sm w-5 text-center">${qty}</span>
-                                    <button onclick="updateQty(${item.id}, 1)" class="w-7 h-7 rounded-lg bg-brand-gold text-black hover:bg-amber-400 flex items-center justify-center font-bold text-sm transition">+</button>
-                                </div>
-                            `}
-                        </div>
-                    </div>
-                `;
-            }).join('');
+            app.innerHTML = `
+                <div class="restaurant-header">
+                    <img src="${restaurantData.logo || 'https://via.placeholder.com/100'}" class="restaurant-logo" alt="logo">
+                    <h4>${restaurantData.restaurantName}</h4>
+                    <p class="text-muted small mb-0">${restaurantData.address || ''}</p>
+                </div>
+                ${categoriesHTML}
+                ${itemsHTML}
+            `;
         }
 
-        function addToCart(itemId) {
-            const item = menuItems.find(i => i.id === itemId);
-            if (!item) return;
-
-            if (!cart[itemId]) {
-                cart[itemId] = { ...item, qty: 1 };
-            } else {
-                cart[itemId].qty++;
-            }
-            updateCartUI();
-            renderMenu();
+        function scrollToCategory(catId, btn) {
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const el = document.getElementById(catId);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
         }
 
-        function updateQty(itemId, change) {
-            if (!cart[itemId]) return;
-
-            cart[itemId].qty += change;
-            if (cart[itemId].qty <= 0) {
-                delete cart[itemId];
-            }
+        function addToCart(id, name, price) {
+            if (!cart[id]) cart[id] = { name, price, qty: 0 };
+            cart[id].qty++;
             updateCartUI();
-            renderMenu();
         }
 
         function updateCartUI() {
-            const cartKeys = Object.keys(cart);
-            let totalQty = 0;
-            let totalPrice = 0;
-
-            cartKeys.forEach(key => {
-                const item = cart[key];
-                totalQty += item.qty;
-                // تنظيف سعر المنتج من أي رموز وحسابه كعدد
-                const numericPrice = parseFloat(item.price) || 0;
-                totalPrice += numericPrice * item.qty;
-            });
-
-            // تحديث العناصر
-            document.getElementById('cartBadge').innerText = totalQty;
-            document.getElementById('cartTotalBar').innerText = totalPrice + " ر.س";
-            document.getElementById('cartTotalModal').innerText = totalPrice + " ر.س";
-
-            const floatingCart = document.getElementById('floatingCart');
-            if (totalQty > 0) {
-                floatingCart.classList.remove('translate-y-28', 'opacity-0', 'pointer-events-none');
-            } else {
-                floatingCart.classList.add('translate-y-28', 'opacity-0', 'pointer-events-none');
-                closeModal('cartModal');
-            }
-
-            renderCartModalItems();
-        }
-
-        function renderCartModalItems() {
-            const container = document.getElementById('cartItemsContainer');
-            const cartItems = Object.values(cart);
-
-            if (cartItems.length === 0) {
-                container.innerHTML = '<p class="text-center text-gray-500 py-6 text-sm">السلة فارغة حالياً</p>';
-                return;
-            }
-
-            container.innerHTML = cartItems.map(item => `
-                <div class="flex items-center justify-between bg-black/40 p-3 rounded-xl border border-gray-800">
-                    <div>
-                        <h4 class="font-bold text-white text-sm">${item.name}</h4>
-                        <div class="text-xs text-brand-gold font-bold mt-0.5">${item.price}</div>
-                    </div>
-                    <div class="flex items-center gap-2 bg-neutral-900 border border-gray-700 rounded-lg p-1">
-                        <button onclick="updateQty(${item.id}, -1)" class="w-6 h-6 rounded bg-gray-800 text-brand-gold flex items-center justify-center font-bold text-xs">-</button>
-                        <span class="font-bold text-white text-xs w-4 text-center">${item.qty}</span>
-                        <button onclick="updateQty(${item.id}, 1)" class="w-6 h-6 rounded bg-brand-gold text-black flex items-center justify-center font-bold text-xs">+</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function setOrderType(type) {
-            orderType = type;
-            const btnDining = document.getElementById('btnDining');
-            const btnDelivery = document.getElementById('btnDelivery');
-            const diningFields = document.getElementById('diningFields');
-            const deliveryFields = document.getElementById('deliveryFields');
-
-            if (type === 'dining') {
-                btnDining.className = "py-2 text-xs font-bold rounded-xl border border-brand-gold bg-brand-gold/20 text-brand-gold flex items-center justify-center gap-1.5";
-                btnDelivery.className = "py-2 text-xs font-bold rounded-xl border border-gray-700 bg-gray-800 text-gray-400 flex items-center justify-center gap-1.5";
-                diningFields.classList.remove('hidden');
-                deliveryFields.classList.add('hidden');
-            } else {
-                btnDelivery.className = "py-2 text-xs font-bold rounded-xl border border-brand-gold bg-brand-gold/20 text-brand-gold flex items-center justify-center gap-1.5";
-                btnDining.className = "py-2 text-xs font-bold rounded-xl border border-gray-700 bg-gray-800 text-gray-400 flex items-center justify-center gap-1.5";
-                deliveryFields.classList.remove('hidden');
-                diningFields.classList.add('hidden');
-            }
-        }
-
-        function openModal(id) {
-            document.getElementById(id).classList.remove('hidden');
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-        }
-
-        function sendWhatsAppOrder() {
-            const items = Object.values(cart);
-            if (items.length === 0) return;
-
-            let text = `*طلب جديد من: ${currentRestaurantName}*\n\n`;
-            text += `*نوع الطلب:* ${orderType === 'dining' ? 'داخل المطعم 🍽️' : 'توصيل للمنزل 🚚'}\n`;
-
-            if (orderType === 'dining') {
-                const tableNum = document.getElementById('tableNum').value.trim();
-                if (!tableNum) {
-                    alert('يرجى كتابة رقم الطاولة');
-                    return;
-                }
-                text += `*رقم الطاولة:* ${tableNum}\n`;
-            } else {
-                const name = document.getElementById('custName').value.trim();
-                const phone = document.getElementById('custPhone').value.trim();
-                const address = document.getElementById('custAddress').value.trim();
-
-                if (!name || !phone || !address) {
-                    alert('يرجى تعبئة كافة بيانات التوصيل المطلوبة');
-                    return;
-                }
-                text += `*الاسم:* ${name}\n`;
-                text += `*الهاتف:* ${phone}\n`;
-                text += `*العنوان:* ${address}\n`;
-            }
-
-            text += `\n*الطلبات:*\n`;
             let total = 0;
-            items.forEach((item, idx) => {
-                const price = parseFloat(item.price) || 0;
-                const subtotal = price * item.qty;
-                total += subtotal;
-                text += `${idx + 1}. ${item.name} × ${item.qty} = ${subtotal} ر.س\n`;
-            });
-
-            text += `\n*الإجمالي الكلي:* ${total} ر.س\n`;
-
-            const notes = document.getElementById('orderNotes').value.trim();
-            if (notes) {
-                text += `\n*ملاحظات:* ${notes}\n`;
+            let count = 0;
+            for (let id in cart) {
+                total += cart[id].price * cart[id].qty;
+                count += cart[id].qty;
             }
+            const cartBar = document.getElementById('cartBar');
+            if (count > 0) {
+                cartBar.classList.remove('d-none');
+                document.getElementById('cartCount').innerText = count;
+                document.getElementById('cartTotal').innerText = total + ' ج.م';
+            } else {
+                cartBar.classList.add('d-none');
+            }
+        }
 
-            const encodedText = encodeURIComponent(text);
-            const whatsappUrl = `https://wa.me/${CASHIER_WHATSAPP}?text=${encodedText}`;
-            window.open(whatsappUrl, '_blank');
+        function sendOrderWhatsApp() {
+            let message = `طلب جديد من المنيو الإلكتروني - ${restaurantData.restaurantName}:\n\n`;
+            let total = 0;
+            for (let id in cart) {
+                let item = cart[id];
+                let subtotal = item.price * item.qty;
+                total += subtotal;
+                message += `• ${item.name} x ${item.qty} = ${subtotal} ج.م\n`;
+            }
+            message += `\nإجمالي الطلب: ${total} ج.م`;
+            
+            const phone = restaurantData.whatsapp || '201000000000';
+            const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
         }
     </script>
 </body>
