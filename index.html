@@ -3,505 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المنيو الذكي</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>كبابجي وبروست ابن مصر - المنيو الإلكتروني</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Cairo) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#D9232D',
+                            darkred: '#9B1B22',
+                            gold: '#D4AF37',
+                            amber: '#FFBF00',
+                            dark: '#121212',
+                            surface: '#1E1E1E',
+                            card: '#282828'
+                        }
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --primary-color: #ff9900;
-            --bg-color: #0f0f0f;
-            --card-bg: #1a1a1a;
-            --text-color: #ffffff;
-            --text-muted: #aaaaaa;
-            --transition: all 0.3s ease;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding-bottom: 80px;
-            margin: 0;
-        }
-
-        .restaurant-header {
-            text-align: center;
-            padding: 30px 15px 20px;
-            background: linear-gradient(180deg, rgba(255,153,0,0.15) 0%, rgba(15,15,15,1) 100%);
-            border-bottom: 1px solid #2a2a2a;
-        }
-
-        .restaurant-logo {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--primary-color);
-            margin-bottom: 12px;
-            background-color: #222;
-        }
-
-        .category-scroll {
-            display: flex;
-            overflow-x: auto;
-            overflow-y: hidden;
-            white-space: nowrap;
-            padding: 12px 10px;
-            background-color: #141414;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid #222;
-            scroll-behavior: smooth;
-        }
-
-        .category-scroll::-webkit-scrollbar {
-            display: none;
-        }
-
-        .category-btn {
-            background: #222;
-            color: #fff;
-            border: 1px solid #333;
-            padding: 8px 18px;
-            margin-left: 8px;
-            border-radius: 20px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: var(--transition);
-            flex-shrink: 0;
-        }
-
-        .category-btn:hover {
-            background: #333;
-            border-color: #444;
-        }
-
-        .category-btn.active {
-            background: var(--primary-color);
-            color: #000;
-            font-weight: bold;
-            border-color: var(--primary-color);
-        }
-
-        .menu-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            border: 1px solid #262626;
-            margin-bottom: 15px;
-            overflow: hidden;
-            display: flex;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .menu-card:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 153, 0, 0.2);
-        }
-
-        .menu-card-img {
-            width: 110px;
-            height: 110px;
-            object-fit: cover;
-            background-color: #222;
-            flex-shrink: 0;
-        }
-
-        .menu-card-body {
-            padding: 12px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .menu-card-title {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 4px;
-            word-break: break-word;
-        }
-
-        .menu-card-desc {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-            line-height: 1.4;
-        }
-
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .price-tag {
-            color: var(--primary-color);
-            font-weight: bold;
-            font-size: 15px;
-        }
-
-        .add-btn {
-            background: var(--primary-color);
-            color: #000;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 13px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .add-btn:hover {
-            background: #ffb01a;
-            transform: scale(1.05);
-        }
-
-        .add-btn:active {
-            transform: scale(0.95);
-        }
-
-        .cart-bar {
-            position: fixed;
-            bottom: 15px;
-            left: 15px;
-            right: 15px;
-            background: var(--primary-color);
-            color: #000;
-            padding: 12px 20px;
-            border-radius: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(255,153,0,0.4);
-            z-index: 999;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .cart-bar:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255,153,0,0.5);
-        }
-
-        .cart-bar.d-none {
-            display: none !important;
-        }
-
-        /* Modal Styles */
-        .modal-backdrop {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-        }
-
-        .modal-backdrop.show {
-            display: block;
-        }
-
-        .cart-modal {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--card-bg);
-            border-top: 2px solid var(--primary-color);
-            border-radius: 20px 20px 0 0;
-            padding: 20px;
-            max-height: 80vh;
-            overflow-y: auto;
-            z-index: 1001;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-        }
-
-        .cart-modal.show {
-            transform: translateY(0);
-        }
-
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            border-bottom: 1px solid #262626;
-            margin-bottom: 8px;
-        }
-
-        .cart-item-info {
-            flex: 1;
-        }
-
-        .cart-item-name {
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-
-        .cart-item-qty {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .qty-btn {
-            background: #333;
-            color: #fff;
-            border: none;
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-
-        .qty-btn:hover {
-            background: var(--primary-color);
-            color: #000;
-        }
-
-        .delete-btn {
-            background: #d32f2f;
-            color: #fff;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: var(--transition);
-        }
-
-        .delete-btn:hover {
-            background: #b71c1c;
-        }
-
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 50vh;
-        }
-
-        .error-message {
-            background: #d32f2f;
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px;
-            text-align: center;
-        }
-
-        .success-message {
-            background: #4caf50;
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px;
-            text-align: center;
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translateY(-20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .empty-cart {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-muted);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #262626;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: var(--text-color);
-            font-size: 24px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .close-btn:hover {
-            color: var(--primary-color);
-        }
-
-        @media (max-width: 480px) {
-            .cart-bar {
-                bottom: 10px;
-                left: 10px;
-                right: 10px;
-                padding: 10px 16px;
-                font-size: 14px;
-            }
-
-            .menu-card {
-                flex-direction: column;
-            }
-
-            .menu-card-img {
-                width: 100%;
-                height: 150px;
-            }
+        body { font-family: 'Cairo', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-panel {
+            background: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 191, 0, 0.15);
         }
     </style>
 </head>
-<body>
+<body class="bg-brand-dark text-gray-100 min-h-screen pb-24 font-cairo">
 
-    <div id="app" class="loading">
-        <div class="text-center">
-            <div class="spinner-border text-warning" role="status"></div>
-            <p class="mt-2">جاري تحميل المنيو...</p>
+    <!-- Header Section -->
+    <header class="relative bg-gradient-to-b from-brand-darkred to-brand-dark pt-8 pb-6 px-4 shadow-2xl border-b border-brand-amber/20">
+        <div class="max-w-3xl mx-auto text-center relative z-10">
+            <div class="inline-block p-1 bg-gradient-to-r from-brand-amber to-brand-red rounded-full shadow-lg mb-3">
+                <img id="rest-logo" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200" alt="Logo" class="w-20 h-20 rounded-full object-cover border-2 border-brand-dark">
+            </div>
+            <h1 id="rest-name" class="text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-amber via-white to-brand-gold mb-1">
+                كبابجي وبروست ابن مصر
+            </h1>
+            <p id="rest-desc" class="text-amber-200/80 text-xs sm:text-sm max-w-md mx-auto mb-3">
+                أصل المشويات والبروست في طامية • طعم مصري أصيل
+            </p>
+            <div class="flex flex-wrap justify-center items-center gap-3 text-xs text-gray-300">
+                <span class="bg-black/40 px-3 py-1 rounded-full border border-amber-500/20"><i class="fa-solid font-bold text-amber-400 fa-location-dot me-1"></i> طامية - مساكن الزراعة - أمام إعدادي بنات</span>
+                <a href="tel:01040062596" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 px-3 py-1 rounded-full border border-amber-500/40 transition">
+                    <i class="fa-solid fa-phone me-1"></i> 01040062596
+                </a>
+            </div>
         </div>
-    </div>
+    </header>
 
-    <!-- شريط السلة السفلي -->
-    <div id="cartBar" class="cart-bar d-none" role="button" tabindex="0" onclick="openCartModal()" onkeypress="handleKeyPress(event, openCartModal)">
-        <span><i class="fa-solid fa-cart-shopping me-2"></i> السلة (<span id="cartCount">0</span>)</span>
-        <span id="cartTotal">0 ج.م</span>
+    <main class="max-w-3xl mx-auto px-4 mt-6">
+        
+        <!-- Search & Custom Sheet Sync -->
+        <div class="space-y-3 mb-6">
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="text" id="search-input" oninput="filterItems()" placeholder="ابحث عن صنفك المفضل (كباب، بروست، ريزو...)" 
+                       class="w-full bg-brand-surface border border-gray-700 focus:border-brand-amber text-white pr-11 pl-4 py-3 rounded-2xl outline-none transition text-sm shadow-inner">
+            </div>
+
+            <!-- Categories Horizontal Scroll -->
+            <div id="categories-container" class="flex gap-2 overflow-x-auto no-scrollbar py-1">
+                <!-- Category Buttons Generated Dynamically -->
+            </div>
+        </div>
+
+        <!-- Google Sheets Integration Banner (Optional Sync) -->
+        <div class="mb-4 bg-brand-surface/60 border border-amber-500/10 rounded-xl p-3 text-xs text-gray-400 flex justify-between items-center">
+            <span><i class="fa-solid fa-sync text-brand-amber me-1"></i> الأسعار محدثة تلقائياً مع المنيو الأساسي</span>
+            <button onclick="openSyncModal()" class="text-brand-amber underline hover:text-white transition">تحديث عبر شيت</button>
+        </div>
+
+        <!-- Menu Items List -->
+        <div id="items-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Item Cards Generated Dynamically -->
+        </div>
+
+        <!-- Empty Search State -->
+        <div id="empty-state" class="hidden text-center py-12 text-gray-400">
+            <i class="fa-solid fa-utensils text-4xl mb-3 text-brand-amber/40"></i>
+            <p>لا توجد أصناف مطابقة للبحث</p>
+        </div>
+    </main>
+
+    <!-- Floating Cart Bar -->
+    <div id="floating-cart" class="fixed bottom-4 left-4 right-4 max-w-3xl mx-auto z-40 hidden">
+        <div class="glass-panel rounded-2xl p-4 flex justify-between items-center shadow-2xl border border-brand-amber/30">
+            <div class="flex items-center gap-3">
+                <div class="relative bg-gradient-to-r from-brand-amber to-brand-red w-12 h-12 rounded-xl flex items-center justify-center text-brand-dark font-black text-lg shadow-lg">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-white text-brand-red text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow">0</span>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-400">إجمالي الطلب</p>
+                    <p class="text-lg font-extrabold text-brand-amber"><span id="cart-total">0</span> <span class="text-xs text-gray-300">ج.م</span></p>
+                </div>
+            </div>
+            <button onclick="openCartModal()" class="bg-gradient-to-r from-brand-amber to-amber-600 text-brand-dark font-bold px-5 py-2.5 rounded-xl hover:brightness-110 transition flex items-center gap-2 text-sm shadow-md">
+                عرض السلة <i class="fa-solid fa-arrow-left"></i>
+            </button>
+        </div>
     </div>
 
     <!-- Cart Modal -->
-    <div id="cartBackdrop" class="modal-backdrop" onclick="closeCartModal()"></div>
-    <div id="cartModal" class="cart-modal">
-        <div class="modal-header">
-            <h5 class="m-0">سلة الطلب</h5>
-            <button class="close-btn" onclick="closeCartModal()" aria-label="إغلاق">×</button>
+    <div id="cart-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-brand-surface w-full max-w-lg rounded-t-3xl sm:rounded-2xl max-h-[90vh] flex flex-col border border-brand-amber/20 shadow-2xl">
+            <!-- Modal Header -->
+            <div class="p-4 border-b border-gray-800 flex justify-between items-center">
+                <h2 class="text-lg font-bold text-brand-amber flex items-center gap-2">
+                    <i class="fa-solid fa-cart-flatbed"></i> سلة المشتريات
+                </h2>
+                <button onclick="closeCartModal()" class="text-gray-400 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="p-4 overflow-y-auto flex-1 space-y-4">
+                <!-- Order Type Selector -->
+                <div class="grid grid-cols-2 gap-2 p-1 bg-black/40 rounded-xl border border-gray-800">
+                    <button type="button" id="btn-dinein" onclick="setOrderType('dinein')" class="py-2 rounded-lg text-sm font-bold transition bg-brand-amber text-brand-dark">
+                        <i class="fa-solid fa-chair me-1"></i> داخل المطعم
+                    </button>
+                    <button type="button" id="btn-delivery" onclick="setOrderType('delivery')" class="py-2 rounded-lg text-sm font-bold transition text-gray-400 hover:text-white">
+                        <i class="fa-solid fa-motorcycle me-1"></i> توصيل للمنزل
+                    </button>
+                </div>
+
+                <!-- Customer Details Form -->
+                <div id="dinein-fields" class="space-y-3">
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">رقم الطاولة *</label>
+                        <input type="text" id="table-number" placeholder="مثال: طاولة 5" class="w-full bg-black/40 border border-gray-700 text-white rounded-xl px-3 py-2 text-sm outline-none focus:border-brand-amber">
+                    </div>
+                </div>
+
+                <div id="delivery-fields" class="space-y-3 hidden">
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">الاسم بالكامل *</label>
+                        <input type="text" id="cust-name" placeholder="أدخل اسمك" class="w-full bg-black/40 border border-gray-700 text-white rounded-xl px-3 py-2 text-sm outline-none focus:border-brand-amber">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">رقم الهاتف *</label>
+                        <input type="tel" id="cust-phone" placeholder="010XXXXXXXX" class="w-full bg-black/40 border border-gray-700 text-white rounded-xl px-3 py-2 text-sm outline-none focus:border-brand-amber">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">العنوان بالتفصيل *</label>
+                        <input type="text" id="cust-address" placeholder="المنطقة، اسم الشارع، رقم العمارة..." class="w-full bg-black/40 border border-gray-700 text-white rounded-xl px-3 py-2 text-sm outline-none focus:border-brand-amber">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">ملاحظات على الطلب (اختياري)</label>
+                    <textarea id="order-notes" rows="2" placeholder="أسياخ إضافية، بدون بصل، زيادة طحينة..." class="w-full bg-black/40 border border-gray-700 text-white rounded-xl px-3 py-2 text-sm outline-none focus:border-brand-amber resize-none"></textarea>
+                </div>
+
+                <!-- Selected Items List -->
+                <div class="border-t border-gray-800 pt-3">
+                    <h3 class="text-xs font-bold text-gray-400 mb-2">الأصناف المختارة:</h3>
+                    <div id="cart-items-list" class="space-y-2">
+                        <!-- Dynamic Cart Rows -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-gray-800 bg-black/40 space-y-3">
+                <div class="flex justify-between items-center text-sm">
+                    <span class="text-gray-400">الإجمالي النهائي:</span>
+                    <span class="text-xl font-black text-brand-amber"><span id="modal-cart-total">0</span> ج.م</span>
+                </div>
+                <button onclick="sendToWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 shadow-lg">
+                    <i class="fa-brands fa-whatsapp text-xl"></i> إرسال الطلب عبر واتساب
+                </button>
+            </div>
         </div>
-        <div id="cartItems"></div>
-        <div id="emptyCart" class="empty-cart">
-            <p>السلة فارغة</p>
-        </div>
-        <div id="cartSummary"></div>
-        <button class="btn btn-warning w-100 mt-3" onclick="sendOrderWhatsApp()" id="submitBtn">
-            <i class="fa-brands fa-whatsapp me-2"></i> إرسال الطلب عبر WhatsApp
-        </button>
     </div>
 
+    <!-- Sync Sheet Modal -->
+    <div id="sync-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-brand-surface w-full max-w-md rounded-2xl p-5 border border-brand-amber/30 space-y-4">
+            <h3 class="text-base font-bold text-brand-amber flex items-center gap-2">
+                <i class="fa-solid fa-file-csv"></i> ربط الأسعار بملف Google Sheets
+            </h3>
+            <p class="text-xs text-gray-300 leading-relaxed">
+                قم بنشر شيت جوجل بصيغة Web CSV واستبدل البيانات فوراً دون الحاجة لتغيير الكود!
+            </p>
+            <input type="url" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/e/.../pub?output=csv" class="w-full bg-black/40 border border-gray-700 text-white rounded-xl px-3 py-2 text-xs outline-none focus:border-brand-amber">
+            <div class="flex gap-2">
+                <button onclick="syncGoogleSheet()" class="flex-1 bg-brand-amber text-brand-dark font-bold py-2 rounded-xl text-xs">جلب البيانات</button>
+                <button onclick="closeSyncModal()" class="px-4 bg-gray-800 text-gray-300 rounded-xl text-xs">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer & Rights -->
+    <footer class="mt-12 py-6 text-center text-gray-500 border-t border-gray-800 text-xs">
+        <div class="max-w-3xl mx-auto px-4 space-y-2">
+            <p>© 2026 جميع الحقوق محفوظة لمطعم كبابجي وبروست ابن مصر</p>
+            <p class="font-bold text-gray-400">
+                تصميم وتطوير: <a href="tel:01154155415" class="text-brand-amber hover:underline">Hussein Mohareb • 01154155415</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
     <script>
-        // Constants
-        const CONFIG = {
-            placeholder: 'https://via.placeholder.com/150',
-            defaultRestaurant: 'ibn-masr',
-            animationDuration: 300
+        // Restaurant Config
+        const restaurantData = {
+            name: "كبابجي وبروست ابن مصر",
+            logo: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200",
+            phone: "01040062596",
+            whatsapp: "201040062596",
+            address: "طامية - مساكن الزراعة - أمام إعدادي بنات",
+            currency: "ج.م"
         };
 
-        // Global State
-        let restaurantData = null;
-        let cart = {};
+        // Full Items List (Accurate with Prices & Categories)
+        let itemsData = [
+            // البروست
+            { id: 1, name: "وجبة بروست 1 قطعة", price: 80, category: "البروست", description: "قطعة بروست مقرمشة مع الخبز والسلطة", image: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=500" },
+            { id: 2, name: "وجبة بروست 2 قطعة", price: 105, category: "البروست", description: "2 قطعة بروست مقرمشة", image: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=500" },
+            { id: 3, name: "وجبة بروست 3 قطع", price: 130, category: "البروست", description: "3 قطع بروست مقرمشة", image: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=500" },
+            { id: 4, name: "وجبة بروست 4 قطع", price: 210, category: "البروست", description: "4 قطع بروست مقرمشة", image: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=500" },
+            { id: 5, name: "وجبة استربس 5 قطع", price: 70, category: "البروست", description: "5 قطع أصابع دجاج استربس مقرمشة", image: "https://images.unsplash.com/photo-1562967914-608f82629710?w=500" },
+            { id: 6, name: "وجبة استربس 7 قطع", price: 90, category: "البروست", description: "7 قطع أصابع دجاج استربس مقرمشة", image: "https://images.unsplash.com/photo-1562967914-608f82629710?w=500" },
+            { id: 7, name: "وجبة استربس 9 قطع", price: 110, category: "البروست", description: "9 قطع أصابع دجاج استربس مقرمشة", image: "https://images.unsplash.com/photo-1562967914-608f82629710?w=500" },
+            { id: 8, name: "وجبة عائلي + لتر بيبسي", price: 460, category: "البروست", description: "وجبة عائلية بروست مع لتر بيبسي", image: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=500" },
+            { id: 9, name: "ريزو", price: 50, category: "البروست", description: "أرز ريزو مع قطع الدجاج وصوص الريزو الشهي", image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=500" },
 
-        /**
-         * Escape HTML to prevent XSS
-         */
-        function escapeHTML(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
+            // المشويات
+            { id: 10, name: "فرخة شيش (كاملة)", price: 320, category: "المشويات", description: "فرخة شيش كاملة مشوية على الفحم", image: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=500" },
+            { id: 101, name: "فرخة شيش (نصف)", price: 160, category: "المشويات", description: "نصف فرخة شيش مشوية على الفحم", image: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=500" },
+            { id: 11, name: "فرخة شواية (كاملة)", price: 320, category: "المشويات", description: "فرخة شواية كاملة محمرة ومتبلة", image: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=500" },
+            { id: 111, name: "فرخة شواية (نصف)", price: 160, category: "المشويات", description: "نصف فرخة شواية محمرة", image: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=500" },
+            { id: 12, name: "فرخة تكا (كاملة)", price: 320, category: "المشويات", description: "فرخة تكا بتتبيلة ابن مصر الخاصة", image: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=500" },
+            { id: 121, name: "فرخة تكا (نصف)", price: 160, category: "المشويات", description: "نصف فرخة تكا بتتبيلة خاصة", image: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=500" },
+            { id: 13, name: "كباب ضاني (كيلو)", price: 1200, category: "المشويات", description: "كباب ضاني مشوي على الفحم", image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500" },
+            { id: 131, name: "كباب ضاني (نصف كيلو)", price: 600, category: "المشويات", description: "نصف كيلو كباب ضاني مشوي", image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500" },
+            { id: 132, name: "كباب ضاني (ربع كيلو)", price: 300, category: "المشويات", description: "ربع كيلو كباب ضاني مشوي", image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500" },
+            { id: 14, name: "كباب ريش (كيلو)", price: 1400, category: "المشويات", description: "ريش ضاني مشوية على الفحم", image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=500" },
+            { id: 141, name: "كباب ريش (نصف كيلو)", price: 700, category: "المشويات", description: "نصف كيلو ريش ضاني مشوية", image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=500" },
+            { id: 142, name: "كباب ريش (ربع كيلو)", price: 350, category: "المشويات", description: "ربع كيلو ريش ضاني مشوية", image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=500" },
+            { id: 15, name: "طرب ضاني (كيلو)", price: 720, category: "المشويات", description: "طرب ضاني فاخر على الفحم", image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500" },
+            { id: 151, name: "طرب ضاني (نصف كيلو)", price: 360, category: "المشويات", description: "نصف كيلو طرب ضاني", image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500" },
+            { id: 152, name: "طرب ضاني (ربع كيلو)", price: 180, category: "المشويات", description: "ربع كيلو طرب ضاني", image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500" },
+            { id: 16, name: "كفتة ضاني (كيلو)", price: 600, category: "المشويات", description: "كفتة ضاني مشوية على الفحم", image: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=500" },
+            { id: 161, name: "كفتة ضاني (نصف كيلو)", price: 300, category: "المشويات", description: "نصف كيلو كفتة ضاني مشوية", image: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=500" },
+            { id: 162, name: "كفتة ضاني (ربع كيلو)", price: 150, category: "المشويات", description: "ربع كيلو كفتة ضاني مشوية", image: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=500" },
+            { id: 17, name: "حمام محشي", price: 200, category: "المشويات", description: "حمام محشي أرز بالخلطة ومحمر", image: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=500" },
+            { id: 18, name: "موزة ضاني", price: 280, category: "المشويات", description: "موزة ضاني محمرة ومستوية في الفرن", image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=500" },
+            { id: 19, name: "وجبة ربع فرخة", price: 95, category: "المشويات", description: "مع أرز + سلطة + طحينة + خبز", image: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=500" },
 
-        /**
-         * Initialize app
-         */
-        function init() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const restaurantId = urlParams.get('res') || CONFIG.defaultRestaurant;
-
-            loadRestaurantData(restaurantId)
-                .catch(() => loadRestaurantData(CONFIG.defaultRestaurant))
-                .catch(() => showError('عذراً، حدث خطأ في تحميل المنيو'));
-        }
-
-        /**
-         * Load restaurant data from JSON
-         */
-        async function loadRestaurantData(restaurantId) {
-            const response = await fetch(`${restaurantId}.json`);
-            if (!response.ok) throw new Error('Failed to load');
-            restaurantData = await response.json();
-            validateData(restaurantData);
-            renderApp();
-        }
-
-        /**
-         * Validate restaurant data structure
-         */
-        function validateData(data) {
-            if (!data.restaurantName || !Array.isArray(data.categories)) {
-                throw new Error('Invalid data structure');
-            }
-            if (!data.whatsapp) {
-                console.warn('WhatsApp number not provided');
-            }
-        }
-
-        /**
-         * Render the entire app
-         */
-        function renderApp() {
-            const app = document.getElementById('app');
-            document.title = escapeHTML(restaurantData.restaurantName);
-
-            const headerHTML = createHeaderHTML();
-            const categoriesHTML = createCategoriesHTML();
-            const itemsHTML = createItemsHTML();
-
-            app.innerHTML = `${headerHTML}${categoriesHTML}${itemsHTML}`;
-
-            // Setup scroll listener
-            setupCategoryScrollListener();
-        }
-
-        /**
-         * Create restaurant header
-         */
-        function createHeaderHTML() {
-            const logo = restaurantData.logo || CONFIG.placeholder;
-            const name = escapeHTML(restaurantData.restaurantName);
-            const address = escapeHTML(restaurantData.address || '');
-
-            return `
-                <div class="restaurant-header">
-                    <img src="${logo}" class="restaurant-logo" alt="${name}" loading="lazy" onerror="this.src='${CONFIG.placeholder}'">
-                    <h4>${name}</h4>
-                    <p class="text-muted small mb-0">${address}</p>
-                </div>
-            `;
-        }
-
-        /**
-         * Create category buttons
-         */
-        function createCategoriesHTML() {
-            let html = '<div class="category-scroll" id="categoryScroll">';
-            restaurantData.categories.forEach((cat, index) => {
-                const isActive = index === 0 ?
+            // السندوتشات
+            { id: 20, name: "ساندوتش كباب ضاني", price: 50, category: "السندوتشات", description: "ساندوتش كباب ضاني بلدي مع الطحينة والسلطة", image: "https://
