@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة إدارة المنيو</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fff7ed',
+                            500: '#f97316',
+                            600: '#ea580c',
+                            700: '#c2410c'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Tajawal', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-100 font-sans min-h-screen text-slate-800 pb-12">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b sticky top-0 z-30">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-sliders text-brand-500"></i>
+                إدارة المنيو
+            </h1>
+            <div id="restaurantSelectContainer" class="hidden">
+                <span class="text-sm text-slate-500">المطعم: </span>
+                <span id="currentRestaurantName" class="font-bold text-slate-700"></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-6">
+
+        <!-- Restaurant Load Section -->
+        <section class="bg-white p-6 rounded-2xl shadow-sm border mb-6">
+            <h2 class="text-lg font-bold mb-4 flex items-center gap-2 text-slate-800">
+                <i class="fa-solid fa-store text-brand-500"></i>
+                اختيار المطعم
+            </h2>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <input type="text" id="restaurantIdInput" placeholder="أدخل معرف المطعم (مثال: prince)" class="flex-1 border rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 border-slate-300">
+                <button onclick="loadRestaurantData()" class="bg-brand-500 hover:bg-brand-600 text-white font-bold px-6 py-2.5 rounded-xl transition shadow-md shadow-brand-500/20">
+                    تحميل البيانات
+                </button>
+            </div>
+        </section>
+
+        <!-- Main Editor Section (Hidden initially) -->
+        <div id="editorSection" class="hidden space-y-6">
+
+            <!-- General Settings -->
+            <section class="bg-white p-6 rounded-2xl shadow-sm border">
+                <h2 class="text-lg font-bold mb-4 text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-gear text-brand-500"></i>
+                    الإعدادات العامة
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-1">اسم المطعم</label>
+                        <input type="text" id="resName" class="w-full border rounded-xl px-3 py-2 border-slate-300 focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-1">رابط الشعار (Logo)</label>
+                        <input type="text" id="resLogo" class="w-full border rounded-xl px-3 py-2 border-slate-300 focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-1">رقم الواتساب (للتواصل)</label>
+                        <input type="text" id="resPhone" class="w-full border rounded-xl px-3 py-2 border-slate-300 focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-1">العملة</label>
+                        <input type="text" id="resCurrency" class="w-full border rounded-xl px-3 py-2 border-slate-300 focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Items Editor -->
+            <section class="bg-white p-6 rounded-2xl shadow-sm border">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-utensils text-brand-500"></i>
+                        قائمة الأصناف
+                    </h2>
+                    <button onclick="addNewItem()" class="bg-slate-800 hover:bg-slate-900 text-white text-sm font-bold px-4 py-2 rounded-xl transition flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> إضافة صنف جديد
+                    </button>
+                </div>
+
+                <div id="itemsContainer" class="space-y-4">
+                    <!-- Items will be generated here -->
+                </div>
+            </section>
+
+            <!-- Export / Actions -->
+            <section class="bg-white p-6 rounded-2xl shadow-sm border flex flex-col sm:flex-row gap-4 items-center justify-between">
+                <div>
+                    <h3 class="font-bold text-slate-800">تصدير التحديثات</h3>
+                    <p class="text-sm text-slate-500">قم بتحميل ملف JSON الجديد رفعه إلى GitHub لتحديث المنيو.</p>
+                </div>
+                <button onclick="exportJSON()" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-3 rounded-xl transition shadow-lg shadow-green-600/20 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-download"></i>
+                    تصدير ملف JSON
+                </button>
+            </section>
+
+        </div>
+
+    </main>
+
+    <script>
+        let currentData = null;
+        let currentId = '';
+
+        async function loadRestaurantData() {
+            const id = document.getElementById('restaurantIdInput').value.trim();
+            if (!id) {
+                alert('يرجى إدخال معرف المطعم');
+                return;
+            }
+
+            try {
+                const response = await fetch(`./${id}.json`);
+                if (!response.ok) throw new Error('لم يتم العثور على ملف المطعم');
+                
+                currentData = await response.json();
+                currentId = id;
+                
+                renderEditor();
+            } catch (err) {
+                alert('خطأ: ' + err.message);
+            }
+        }
+
+        function renderEditor() {
+            document.getElementById('editorSection').classList.remove('hidden');
+            document.getElementById('restaurantSelectContainer').classList.remove('hidden');
+            document.getElementById('currentRestaurantName').innerText = currentData.restaurant.name;
+
+            // Fill General Info
+            document.getElementById('resName').value = currentData.restaurant.name || '';
+            document.getElementById('resLogo').value = currentData.restaurant.logo || '';
+            document.getElementById('resPhone').value = currentData.restaurant.phone || '';
+            document.getElementById('resCurrency').value = currentData.restaurant.currency || '';
+
+            // Render Items
+            renderItems();
+        }
+
+        function renderItems() {
+            const container = document.getElementById('itemsContainer');
+            container.innerHTML = '';
+
+            currentData.items.forEach((item, index) => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'border rounded-xl p-4 bg-slate-50 relative space-y-3';
+                itemEl.innerHTML = `
+                    <button onclick="deleteItem(${index})" class="absolute top-4 left-4 text-red-500 hover:text-red-700 p-1">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pr-2">
+                        <div>
+                            <label class="block text-xs text-slate-500 mb-1">اسم الصنف</label>
+                            <input type="text" value="${item.name || ''}" onchange="updateItem(${index}, 'name', this.value)" class="w-full border rounded-lg px-2.5 py-1.5 text-sm bg-white border-slate-300">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-500 mb-1">السعر</label>
+                            <input type="number" value="${item.price || 0}" onchange="updateItem(${index}, 'price', parseFloat(this.value))" class="w-full border rounded-lg px-2.5 py-1.5 text-sm bg-white border-slate-300">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-500 mb-1">التصنيف</label>
+                            <input type="text" value="${item.category || ''}" onchange="updateItem(${index}, 'category', this.value)" class="w-full border rounded-lg px-2.5 py-1.5 text-sm bg-white border-slate-300">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1">الوصف</label>
+                        <input type="text" value="${item.description || ''}" onchange="updateItem(${index}, 'description', this.value)" class="w-full border rounded-lg px-2.5 py-1.5 text-sm bg-white border-slate-300">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1">رابط الصورة</label>
+                        <input type="text" value="${item.image || ''}" onchange="updateItem(${index}, 'image', this.value)" class="w-full border rounded-lg px-2.5 py-1.5 text-sm bg-white border-slate-300">
+                    </div>
+                `;
+                container.appendChild(itemEl);
+            });
+        }
+
+        function updateItem(index, field, value) {
+            currentData.items[index][field] = value;
+        }
+
+        function addNewItem() {
+            currentData.items.push({
+                id: Date.now(),
+                name: 'صنف جديد',
+                price: 0,
+                category: 'عام',
+                description: '',
+                image: ''
+            });
+            renderItems();
+        }
+
+        function deleteItem(index) {
+            if (confirm('هل أنت تأكد من حذف هذا الصنف؟')) {
+                currentData.items.splice(index, 1);
+                renderItems();
+            }
+        }
+
+        function exportJSON() {
+            // Read updated general info
+            currentData.restaurant.name = document.getElementById('resName').value;
+            currentData.restaurant.logo = document.getElementById('resLogo').value;
+            currentData.restaurant.phone = document.getElementById('resPhone').value;
+            currentData.restaurant.currency = document.getElementById('resCurrency').value;
+
+            const jsonString = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentData, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", jsonString);
+            downloadAnchor.setAttribute("download", `${currentId}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+    </script>
+</body>
+  </html>
